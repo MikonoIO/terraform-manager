@@ -16,8 +16,6 @@
 export IAC_CLOUD_PROVIDER={AWS,AZURE,GCP} # MUST set this value manually if you have more than one provider
 ```
 
-The **Data Infrastructure** repository is purposed as an IaC template for data-specialists who wish to manage their infrastucture so feel free to fork or pull from this repository for personal or commercial use.
-
 ### Tutorial
 
 1. Execute the **run** in the /build to instantiate the repository and start personalising it to your infrastructure. Make sure that your environment variables are running contextually via runcom/profile or a secret manager (The following commands may require sudo).
