@@ -1,6 +1,6 @@
 # Data Infrastucture (IaC)
 
-**Disclaimer: :construction: This repository is under development and can only built/run on Unix-based systems for now!**
+**Disclaimer: :construction: This repository is under development and therefore not ready for use yet.**
 
 ## Setting up the repository
 
@@ -18,9 +18,14 @@ export IAC_CLOUD_PROVIDER={AWS,AZURE,GCP} # MUST set this value manually if you 
 
 ### Tutorial
 
-1. Execute the **run** in the /build to instantiate the repository and start personalising it to your infrastructure. Make sure that your environment variables are running contextually via runcom/profile or a secret manager (The following commands may require sudo).
+1. From the root of the repository directory, run the below command to instantiate the repository and start personalising it to your infrastructure. Make sure that your environment variables are running contextually via any of the following:
+    - A secret manager.
+    - The runcom or profile scripts on your machine.
 
 ```shell
-chmod -fhv 777 build/*;
-build/run.sh;
+# Run this
+chmod -fhv 777 build/* && build/run;
+
+# Run this if the above doesn't work due to privilege issues
+sudo chmod -fhv 777 build/* && build/run;
 ```
