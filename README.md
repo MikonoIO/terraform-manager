@@ -24,8 +24,8 @@ export IAC_CLOUD_PROVIDER={AWS,AZURE,GCP} # MUST set this value manually if you 
 
 ```shell
 # Run this
-chmod -fhv 777 build/* && build/run;
+chmod +x build/* && build/run;
 
 # Run this if the above doesn't work due to privilege issues
-sudo chmod -fhv 777 build/* && build/run;
+sudo chmod +x build/* && build/run;
 ```
