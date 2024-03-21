@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run:
           name: Install terraform dependencies
-          command: chmod +x 777 build/* && echo '\033[B' '\r' | build/install
+          command: chmod +x build/* && echo '\033[B' '\r' | build/install
       - run:
           name: Setup terraform dependencies
           command: build/setup
@@ -24,7 +24,7 @@ jobs:
           command: build/run
 
 workflows:
-  example:
+  test:
     jobs:
       - test-build-units
       - test-build-whole
