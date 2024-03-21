@@ -98,7 +98,7 @@ set_env() {
         
     esac
 
-    sh -c "echo \"export ${NAME}="\""${VALUE}"\""\" >> ${RUNCOM_PATH} && . ${RUNCOM_PATH}"
+    bash -c "echo \"export ${NAME}="\""${VALUE}"\""\" >> ${RUNCOM_PATH} && . ${RUNCOM_PATH}"
 }
 
 command_exists() {
@@ -109,7 +109,7 @@ command_exists() {
     fi
 }
 
-iac_cloud_provider() {
+moiac_cloud_provider() {
     case $1 in
 
         *"AWS"* | *"GCP"* | *"AZURE"* )
@@ -127,13 +127,13 @@ choose_cloud_provider() {
     
     case $(user_select ${CLOUD_PROVIDER[@]}) in
         *) 
-            export IAC_CLOUD_PROVIDER=${CLOUD_PROVIDER[$?]}
+            export MOIAC_CLOUD_PROVIDER=${CLOUD_PROVIDER[$?]}
         ;;
     esac 
 
     echo "Environment variable set:"
     echo 
-    echo "\$IAC_CLOUD_PROVIDER=${IAC_CLOUD_PROVIDER}"
+    echo "\$MOIAC_CLOUD_PROVIDER=${MOIAC_CLOUD_PROVIDER}"
     echo 
 }
 
@@ -144,32 +144,58 @@ choose_cloud_provider() {
 # Use Machine Identity to install dependencies safely
 case $(uname) in
 
-    # Instsallations
-    "Darwin" | "i386" | "Ubuntu" | "Debian" | "Linux" )
+    "Darwin" | "i386" | "Linux" )
 
-        # Install Homebrew if required
-        if command_exists 'brew'; then
-            sh -c $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)
+        if [[ $(uname) == "Darwin" ]] || [[ $(uname) == "i386" ]]; then
+            if command_exists 'brew'; then
+                sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            fi
+            if command_exists 'terraform'; then
+                sh -c "brew tap hashicorp/tap"
+                sh -c "brew install hashicorp/tap/terraform"
+            fi
+        else
+            sh -c "apt-get update && apt-get install -y lsb-release && apt-get clean all"
+            if [[ $(lsb_release -a) == *"Ubuntu"* ]] || [[ $(lsb_release -a) == *"CentOS"* ]]; then 
+                if command_exists 'terraform'; then
+                    sh -c "apt-get update" 
+                    sh -c "apt-get install wget -y"
+                    sh -c "apt-get install -y gnupg software-properties-common"
+                    sh -c """
+                        wget -O- https://apt.releases.hashicorp.com/gpg | \
+                        gpg --dearmor | \
+                        tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
+                    """
+                    sh -c """
+                        gpg --no-default-keyring \
+                        --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg \
+                        --fingerprint
+                    """
+                    sh -c """
+                        echo deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+                        https://apt.releases.hashicorp.com $(lsb_release -cs) main | \
+                        tee /etc/apt/sources.list.d/hashicorp.list
+                    """
+                    sh -c "apt-get update"
+                    sh -c "apt-get install terraform -y"
+                fi
+            fi
         fi
 
-        # Install Terraform if required
-        if command_exists 'terraform'; then
-            sh -c $(brew tap hashicorp/tap)
-            sh -c $(brew install hashicorp/tap/terraform)
-        fi
         
+
         # Install cloud provider CLI if required
-        if [ -z ${IAC_CLOUD_PROVIDER} ]; then
+        if [ -z ${MOIAC_CLOUD_PROVIDER} ]; then
             
-            echo "The IAC_CLOUD_PROVIDER variable needs to be set globally."
+            echo "The MOIAC_CLOUD_PROVIDER variable needs to be set globally."
             echo "Choose the cloud provider you'd like to manage:"
             echo 
             choose_cloud_provider
-            set_env "IAC_CLOUD_PROVIDER" "${IAC_CLOUD_PROVIDER}"
+            set_env "MOIAC_CLOUD_PROVIDER" "${MOIAC_CLOUD_PROVIDER}"
 
-        elif [[ $(iac_cloud_provider ${IAC_CLOUD_PROVIDER}) -eq 1 ]]; then
+        elif [[ $(moiac_cloud_provider ${MOIAC_CLOUD_PROVIDER}) -eq 1 ]]; then
 
-            echo "The IAC_CLOUD_PROVIDER variable is currently unusable (${IAC_CLOUD_PROVIDER}). To continue the installation we will have to replace this. Would you like to continue?:"
+            echo "The MOIAC_CLOUD_PROVIDER variable is currently unusable (${MOIAC_CLOUD_PROVIDER}). To continue the installation we will have to replace this. Would you like to continue?:"
             echo
             case $(user_select "NO" "YES") in
                 0 )
@@ -179,14 +205,14 @@ case $(uname) in
                     echo "Choose the cloud provider you'd like to manage:"
                     echo 
                     choose_cloud_provider
-                    set_env "IAC_CLOUD_PROVIDER" "${IAC_CLOUD_PROVIDER}"
+                    set_env "MOIAC_CLOUD_PROVIDER" "${MOIAC_CLOUD_PROVIDER}"
                 ;;
             esac
         else
-            echo "Your IAC_CLOUD_PROVIDER is set as ${IAC_CLOUD_PROVIDER}"
+            echo "Your MOIAC_CLOUD_PROVIDER is set as ${MOIAC_CLOUD_PROVIDER}"
         fi
 
-        case ${IAC_CLOUD_PROVIDER} in 
+        case ${MOIAC_CLOUD_PROVIDER} in 
 
             *"AWS"* )
 
@@ -196,10 +222,19 @@ case $(uname) in
 
             *"AZURE"* )
 
-                # Install Azure CLI if required
-                if command_exists 'az'; then
-                    sh -c $(brew update)
-                    sh -c $(brew install azure-cli)
+                if [[ $(uname) == "Darwin" ]] || [[ $(uname) == "i386" ]]; then
+                    if command_exists 'az'; then
+                        sh -c $(brew update)
+                        sh -c $(brew install azure-cli)
+                    fi
+                else
+                    sh -c "apt-get update && apt-get install -y lsb-release && apt-get clean all"
+                    # if command_exists 'az'; then
+                        if [[ $(lsb_release -a) == *"Ubuntu"* ]] || [[ $(lsb_release -a) == *"CentOS"* ]]; then 
+                            sh -c "apt-get install curl -y"
+                            sh -c "curl -sL https://aka.ms/InstallAzureCLIDeb | bash"
+                        fi
+                    # fi
                 fi
                 
             ;;
@@ -212,7 +247,7 @@ case $(uname) in
 
             * )
 
-                echo "The IAC_CLOUD_PROVIDER variable is an unrecognizable value (${IAC_CLOUD_PROVIDER}). To continue the installation you will have to refer to the documentation and replace this."
+                echo "The MOIAC_CLOUD_PROVIDER variable is an unrecognizable value (${MOIAC_CLOUD_PROVIDER}). To continue the installation you will have to refer to the documentation and replace this."
 
             ;;
 
