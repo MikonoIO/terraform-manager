@@ -11,7 +11,7 @@ jobs:
       - run:
           name: Install project dependencies
           command: |
-            echo '\033[B' '\r' | build/install
+            echo '\033[B' '\r' | sudo build/install
             source build/install
       - run:
           name: Setup project dependencies
