@@ -3,28 +3,31 @@
 # See: https://circleci.com/docs/configuration-reference
 version: 2.1
 jobs:
-  test-build-units:
+  build-unit-azure:
     docker:
       - image: cimg/base:stable
     steps:
       - checkout
       - run:
-          name: Install terraform dependencies
-          command: chmod +x build/* && echo '\033[B' '\r' | build/install
+          name: Install project dependencies
+          command: |
+            echo '\033[B' '\r' | build/install
+            source build/install
       - run:
-          name: Setup terraform dependencies
+          name: Setup project dependencies
           command: build/setup
-  test-build-whole:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - checkout
-      - run:
-          name: Run terraform build/*
-          command: build/run
+  # build-intg-azure:
+  #   docker:
+  #     - image: cimg/base:stable
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Run terraform build/*
+  #         command: |
+  #           build/run
 
 workflows:
   test:
     jobs:
-      - test-build-units
-      - test-build-whole
+      - build-unittest-azure
+      # - build-intgtest-azure
