@@ -6,12 +6,13 @@ jobs:
   build-unittest-azure:
     docker:
       - image: cimg/base:stable
+        user: root
     steps:
       - checkout
       - run:
           name: Install project dependencies
           command: |
-            echo '\033[B' '\r' | sudo build/install
+            echo '\033[B' '\r' | build/install
             source build/install
       - run:
           name: Setup project dependencies
