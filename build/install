@@ -145,7 +145,7 @@ choose_cloud_provider() {
 case $(uname) in
 
     # Instsallations
-    "Darwin" | "i386" | "Ubuntu" | "Debian" )
+    "Darwin" | "i386" | "Ubuntu" | "Debian" | "Linux" )
 
         # Install Homebrew if required
         if command_exists 'brew'; then
