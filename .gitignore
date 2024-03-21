@@ -1,3 +1,6 @@
+# Remove local docker compose for development
+docker-compose
+
 # Local .terraform directories
 **/.terraform/*
 
