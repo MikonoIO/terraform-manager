@@ -12,11 +12,13 @@ jobs:
       - run:
           name: Install project dependencies
           command: |
-            echo '\033[B' '\r' | build/install
-            source build/install
+            echo '\033[B' '\r' | . build/install.sh
+            source ${HOME}/.bashrc
       - run:
           name: Setup project dependencies
-          command: build/setup
+          command: |
+            . build/setup.sh
+            source ${HOME}/.bashrc
   # build-intg-azure:
   #   docker:
   #     - image: cimg/base:stable
