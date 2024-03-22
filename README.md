@@ -37,5 +37,5 @@ export MOIAC_SUBSCRIPTION_ID=X # Eg: MOIAC_SUBSCRIPTION_ID=Snjknd12NKSl_as2-
 
 ```shell
 # Run this
-build/run;
+build/compile.sh && . build/run.sh;
 ```
