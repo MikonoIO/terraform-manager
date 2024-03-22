@@ -98,7 +98,8 @@ set_env() {
         
     esac
 
-    bash -c "echo \"export ${NAME}="\""${VALUE}"\""\" >> ${RUNCOM_PATH} && . ${RUNCOM_PATH}"
+    
+    bash -c "echo \"export ${NAME}="\""${VALUE}"\""\" >> ${RUNCOM_PATH}"
 }
 
 command_exists() {
@@ -126,14 +127,16 @@ moiac_cloud_provider() {
 choose_cloud_provider() {
     
     case $(user_select ${CLOUD_PROVIDER[@]}) in
-        *) 
-            export MOIAC_CLOUD_PROVIDER=${CLOUD_PROVIDER[$?]}
+        *)
+            PROVIDER_VAL="${CLOUD_PROVIDER[$?]}"
+            set_env "MOIAC_CLOUD_PROVIDER" ${PROVIDER_VAL}
+            export MOIAC_CLOUD_PROVIDER="${PROVIDER_VAL}"
         ;;
     esac 
 
     echo "Environment variable set:"
     echo 
-    echo "\$MOIAC_CLOUD_PROVIDER=${MOIAC_CLOUD_PROVIDER}"
+    echo "\$MOIAC_CLOUD_PROVIDER=${PROVIDER_VAL}"
     echo 
 }
 
@@ -185,13 +188,12 @@ case $(uname) in
         
 
         # Install cloud provider CLI if required
-        if [ -z ${MOIAC_CLOUD_PROVIDER} ]; then
+        if [ -z "${MOIAC_CLOUD_PROVIDER}" ]; then
             
             echo "The MOIAC_CLOUD_PROVIDER variable needs to be set globally."
             echo "Choose the cloud provider you'd like to manage:"
             echo 
             choose_cloud_provider
-            set_env "MOIAC_CLOUD_PROVIDER" "${MOIAC_CLOUD_PROVIDER}"
 
         elif [[ $(moiac_cloud_provider ${MOIAC_CLOUD_PROVIDER}) -eq 1 ]]; then
 
@@ -205,22 +207,21 @@ case $(uname) in
                     echo "Choose the cloud provider you'd like to manage:"
                     echo 
                     choose_cloud_provider
-                    set_env "MOIAC_CLOUD_PROVIDER" "${MOIAC_CLOUD_PROVIDER}"
                 ;;
             esac
         else
             echo "Your MOIAC_CLOUD_PROVIDER is set as ${MOIAC_CLOUD_PROVIDER}"
         fi
 
-        case ${MOIAC_CLOUD_PROVIDER} in 
+        case "${MOIAC_CLOUD_PROVIDER}" in 
 
-            *"AWS"* )
+            "AWS" )
 
                 echo "TODO"
 
             ;;
 
-            *"AZURE"* )
+            "AZURE" )
 
                 if [[ $(uname) == "Darwin" ]] || [[ $(uname) == "i386" ]]; then
                     if command_exists 'az'; then
@@ -239,7 +240,7 @@ case $(uname) in
                 
             ;;
 
-            *"GCP"* )
+            "GCP" )
 
                 echo "TODO"
 
@@ -261,3 +262,7 @@ case $(uname) in
     ;;
     
 esac
+
+if [ -n "${MOIAC_CLOUD_PROVIDER}" ]; then
+    echo "${MOIAC_CLOUD_PROVIDER}"
+fi
