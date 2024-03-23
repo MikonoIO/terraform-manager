@@ -19,18 +19,18 @@ jobs:
           command: |
             . build/setup.sh
             source ${HOME}/.bashrc
-  # build-intg-azure:
-  #   docker:
-  #     - image: cimg/base:stable
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Run terraform build/*
-  #         command: |
-  #           build/run
+  build-intg-azure:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - run:
+          name: Run terraform build/*
+          command: |
+            echo '\033[B' '\r' | build/compile.sh && . build/run.sh
 
 workflows:
   test:
     jobs:
       - build-unittest-azure
-      # - build-intgtest-azure
+      - build-intgtest-azure
