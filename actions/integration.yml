@@ -19,7 +19,7 @@ jobs:
           command: |
             . build/setup.sh
             source ${HOME}/.bashrc
-  build-intg-azure:
+  build-intgtest-azure:
     docker:
       - image: cimg/base:stable
     steps:
