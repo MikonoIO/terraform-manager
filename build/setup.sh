@@ -1,4 +1,4 @@
-#!bin/sh
+#!bin/sh -e
 set_env() {
     NAME=$1
     VALUE=$2
@@ -22,7 +22,7 @@ connect_azure () {
     # Login if not logged in
     echo "Checking if azure logged in:"
     
-    LOGIN_RESULT=$(az account list)
+    LOGIN_RESULT=$(sh -c "az account list")
 
     if [[ "$LOGIN_RESULT" == "[]" ]]; then
         echo "Logging into azure..."

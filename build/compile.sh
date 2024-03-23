@@ -1,4 +1,4 @@
-
+#!bin/sh -e
 
 case ${SHELL} in
 
@@ -25,5 +25,3 @@ if [ -n "${MOIAC_CLOUD_PROVIDER}" ]; then
     source build/setup.sh "${MOIAC_CLOUD_PROVIDER}"
 
 fi
-
-echo "Success"
