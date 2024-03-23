@@ -21,12 +21,15 @@ connect_azure () {
 
     # Login if not logged in
     echo "Checking if azure logged in:"
-    if [[ $(az account list) == "[]" ]]; then
+    
+    LOGIN_RESULT=$(az account list)
+
+    if [[ "$LOGIN_RESULT" == "[]" ]]; then
         echo "Logging into azure..."
         sh -c "az login --use-device-code"
     fi
     echo
-    echo Logged into azure with: $(az ad signed-in-user show)
+    echo Logged into azure with: \n$(az ad signed-in-user show)
     echo
 
 }
