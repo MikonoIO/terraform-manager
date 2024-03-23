@@ -13,7 +13,7 @@ jobs:
           name: Install project dependencies
           command: |
             echo '\033[B' '\r' | . build/install.sh
-            source ${HOME}/.bashrc
+            . ${HOME}/.bashrc
       - run:
           name: Setup project dependencies
           command: |
