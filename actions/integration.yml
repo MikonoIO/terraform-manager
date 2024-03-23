@@ -18,7 +18,7 @@ jobs:
           name: Setup project dependencies
           command: |
             . build/setup.sh
-            source ${HOME}/.bashrc
+            . ${HOME}/.bashrc
   build-intgtest-azure:
     docker:
       - image: cimg/base:stable
@@ -28,7 +28,8 @@ jobs:
       - run:
           name: Run terraform build/*
           command: |
-            echo '\033[B' '\r' | build/compile.sh && . build/run.sh
+            echo '\033[B' '\r' | build/compile.sh 
+            . build/run.sh
 
 workflows:
   unittest:
