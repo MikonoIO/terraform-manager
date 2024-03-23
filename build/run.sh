@@ -1,31 +1,20 @@
-# !bin/sh -e
-NAME=$1
-VALUE=$2
+#!bin/sh
 
 case ${SHELL} in
 
     *"bash"* )
-        RUNCOM_PATH="${HOME}/.bashrc"
+        RUNCOM_PATH="${HOME}/.profile"
     ;;
     *"zsh"* )
-        RUNCOM_PATH="${HOME}/.zshrc"
+        RUNCOM_PATH="${HOME}/.zprofile"
     ;;
     
 esac
 
-# Run repository build
-RESULT=$(bash -c "build/install.sh")
+MOIAC_CLOUD_PROVIDER=$(grep -Eo 'MOIAC_CLOUD_PROVIDER.+' ${RUNCOM_PATH} | tail -n 1)
+ARM_CLIENT_ID=$(grep -Eo 'ARM_CLIENT_ID.+' ${RUNCOM_PATH} | tail -n 1)
+ARM_CLIENT_SECRET=$(grep -Eo 'ARM_CLIENT_SECRET.+' ${RUNCOM_PATH} | tail -n 1)
+ARM_SUBSCRIPTION_ID=$(grep -Eo 'ARM_SUBSCRIPTION_ID.+' ${RUNCOM_PATH} | tail -n 1)
+ARM_TENANT_ID=$(grep -Eo 'ARM_TENANT_ID.+' ${RUNCOM_PATH} | tail -n 1)
 
-case RESULT in
-    "Your MOIAC_CLOUD_PROVIDER is set as AWS" ) MOIAC_CLOUD_PROVIDER="AWS";;
-    "Your MOIAC_CLOUD_PROVIDER is set as AZURE" ) MOIAC_CLOUD_PROVIDER="AZURE";;
-    "Your MOIAC_CLOUD_PROVIDER is set as GCP" ) MOIAC_CLOUD_PROVIDER="GCP";;
-esac
-
-if [ -n "${MOIAC_CLOUD_PROVIDER}" ]; then
-
-    sh -c "build/setup.sh ${MOIAC_CLOUD_PROVIDER}"
-
-fi
-
-exec "${SHELL}"
+export $MOIAC_CLOUD_PROVIDER $ARM_CLIENT_ID $ARM_CLIENT_SECRET $ARM_SUBSCRIPTION_ID $ARM_TENANT_ID

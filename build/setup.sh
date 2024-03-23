@@ -1,4 +1,4 @@
-# !bin/sh -e
+#!bin/sh
 set_env() {
     NAME=$1
     VALUE=$2
@@ -6,10 +6,10 @@ set_env() {
     case ${SHELL} in
 
         *"bash"* )
-            RUNCOM_PATH="${HOME}/.bashrc"
+            RUNCOM_PATH="${HOME}/.profile"
         ;;
         *"zsh"* )
-            RUNCOM_PATH="${HOME}/.zshrc"
+            RUNCOM_PATH="${HOME}/.zprofile"
         ;;
         
     esac
@@ -25,7 +25,9 @@ connect_azure () {
         echo "Logging into azure..."
         sh -c "az login --use-device-code"
     fi
+    echo
     echo Logged into azure with: $(az ad signed-in-user show)
+    echo
 
 }
 
@@ -54,7 +56,8 @@ setup_azure () {
         set_env "ARM_TENANT_ID" ${TENANT_VAL}
 
     else
-        echo -e 'Setup your MOIAC_PRINCIPAL_ID env variable, refer to the documentation at https://github.com/MikonoIO/terraform-manager for more.'
+        echo
+        echo 'Setup your MOIAC_PRINCIPAL_ID env variable, refer to the documentation at https://github.com/MikonoIO/terraform-manager for more.'
     fi
 
 }
@@ -63,8 +66,6 @@ setup_azure () {
 case ${MOIAC_CLOUD_PROVIDER} in 
 
     "AWS" )
-
-        echo "TODO"
 
     ;;
 
@@ -76,8 +77,6 @@ case ${MOIAC_CLOUD_PROVIDER} in
     ;;
 
     "GCP" )
-
-        echo "TODO"
 
     ;;
 

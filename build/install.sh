@@ -1,4 +1,4 @@
-# !bin/sh -e
+# !bin/sh
 
 ###############################################################################################
 ######################################### DEPENDENCIES ########################################
@@ -18,6 +18,9 @@ select_option() {
 
     # little helpers for terminal print control and key input
     ESC=$( printf "\033")
+    printf "\n"
+    printf "Choose your respective cloud provider:"
+    printf "\n\n"
     cursor_blink_on()  { printf "$ESC[?25h"; }
     cursor_blink_off() { printf "$ESC[?25l"; }
     cursor_to()        { printf "$ESC[$1;${2:-1}H"; }
@@ -90,10 +93,10 @@ set_env() {
     case ${SHELL} in
 
         *"bash"* )
-            RUNCOM_PATH="~/.bashrc"
+            RUNCOM_PATH="~/.profile"
         ;;
         *"zsh"* )
-            RUNCOM_PATH="~/.zshrc"
+            RUNCOM_PATH="~/.zprofile"
         ;;
         
     esac
@@ -125,7 +128,7 @@ moiac_cloud_provider() {
 }
 
 choose_cloud_provider() {
-    
+
     case $(user_select ${CLOUD_PROVIDER[@]}) in
         *)
             PROVIDER_VAL="${CLOUD_PROVIDER[$?]}"
@@ -134,10 +137,12 @@ choose_cloud_provider() {
         ;;
     esac 
 
-    echo "Environment variable set:"
-    echo 
-    echo "\$MOIAC_CLOUD_PROVIDER=${PROVIDER_VAL}"
-    echo 
+}
+
+cloud_echo() {
+
+    echo "Environment variable set: \$MOIAC_CLOUD_PROVIDER=${MOIAC_CLOUD_PROVIDER}"
+
 }
 
 ###############################################################################################
@@ -190,34 +195,19 @@ case $(uname) in
         # Install cloud provider CLI if required
         if [ -z "${MOIAC_CLOUD_PROVIDER}" ]; then
             
-            echo "The MOIAC_CLOUD_PROVIDER variable needs to be set globally."
-            echo "Choose the cloud provider you'd like to manage:"
-            echo 
             choose_cloud_provider
 
         elif [[ $(moiac_cloud_provider ${MOIAC_CLOUD_PROVIDER}) -eq 1 ]]; then
 
-            echo "The MOIAC_CLOUD_PROVIDER variable is currently unusable (${MOIAC_CLOUD_PROVIDER}). To continue the installation we will have to replace this. Would you like to continue?:"
-            echo
-            case $(user_select "NO" "YES") in
-                0 )
-                    echo "Exiting installation process..."
-                ;;
-                1 )
-                    echo "Choose the cloud provider you'd like to manage:"
-                    echo 
-                    choose_cloud_provider
-                ;;
-            esac
-        else
-            echo "Your MOIAC_CLOUD_PROVIDER is set as ${MOIAC_CLOUD_PROVIDER}"
+            echo "${MOIAC_CLOUD_PROVIDER} is already set as your cloud provider"
+            
         fi
 
         case "${MOIAC_CLOUD_PROVIDER}" in 
 
             "AWS" )
 
-                echo "TODO"
+                # echo "TODO"
 
             ;;
 
@@ -248,12 +238,11 @@ case $(uname) in
 
             * )
 
-                echo "The MOIAC_CLOUD_PROVIDER variable is an unrecognizable value (${MOIAC_CLOUD_PROVIDER}). To continue the installation you will have to refer to the documentation and replace this."
+                echo "The MOIAC_CLOUD_PROVIDER variable is an unrecognizable value. To continue the installation you will have to refer to the documentation and replace this."
 
             ;;
 
         esac
-        
         
     ;;
 
@@ -263,6 +252,6 @@ case $(uname) in
     
 esac
 
-if [ -n "${MOIAC_CLOUD_PROVIDER}" ]; then
-    echo "${MOIAC_CLOUD_PROVIDER}"
-fi
+# if [ -n "${MOIAC_CLOUD_PROVIDER}" ]; then
+#     cloud_echo
+# fi
