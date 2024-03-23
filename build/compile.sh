@@ -22,6 +22,8 @@ esac
 
 if [ -n "${MOIAC_CLOUD_PROVIDER}" ]; then
 
-    . build/setup.sh "${MOIAC_CLOUD_PROVIDER}"
+    source build/setup.sh "${MOIAC_CLOUD_PROVIDER}"
 
 fi
+
+echo "Success"
