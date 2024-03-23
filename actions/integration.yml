@@ -30,7 +30,9 @@ jobs:
             echo '\033[B' '\r' | build/compile.sh && . build/run.sh
 
 workflows:
-  test:
+  unittest:
     jobs:
       - build-unittest-azure
+  intgtest:
+    jobs:
       - build-intgtest-azure
