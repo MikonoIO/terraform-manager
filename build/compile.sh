@@ -13,7 +13,7 @@ esac
 
 source build/install.sh
 
-MOIAC_CLOUD_PROVIDER=$(grep -Eo 'MOIAC_CLOUD_PROVIDER.+' ${RUNCOM_PATH} | tail -n 1)
+MOIAC_CLOUD_PROVIDER=$(bash -c "grep -Eo 'MOIAC_CLOUD_PROVIDER.+' ${RUNCOM_PATH} | tail -n 1")
 
 if [ -n "${MOIAC_CLOUD_PROVIDER}" ]; then
 
