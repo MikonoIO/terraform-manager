@@ -29,7 +29,7 @@ connect_azure () {
         sh -c "az login --use-device-code"
     fi
     echo
-    echo Logged into azure with: \n$(az ad signed-in-user show)
+    echo Logged into azure with: $(az ad signed-in-user show)
     echo
 
 }
@@ -65,21 +65,24 @@ setup_azure () {
 
 }
 
+if [ -z "${MOIAC_CLOUD_PROVIDER}" ]; then
+    MOIAC_CLOUD_PROVIDER=$1
+fi
 
 case ${MOIAC_CLOUD_PROVIDER} in 
 
-    "AWS" )
+    *"AWS"* )
 
     ;;
 
-    "AZURE" )
+    *"AZURE"* )
 
         connect_azure
         setup_azure
         
     ;;
 
-    "GCP" )
+    *"GCP"* )
 
     ;;
 

@@ -102,7 +102,7 @@ set_env() {
     esac
 
     
-    bash -c "echo \"export ${NAME}="\""${VALUE}"\""\" >> ${RUNCOM_PATH}"
+    bash -c "echo 'export ${NAME}=${VALUE}' >> ${RUNCOM_PATH}"
 }
 
 command_exists() {
@@ -163,9 +163,9 @@ case $(uname) in
                 sh -c "brew install hashicorp/tap/terraform"
             fi
         else
-            sh -c "apt-get update && apt-get install -y lsb-release && apt-get clean all"
-            if [[ $(lsb_release -a) == *"Ubuntu"* ]] || [[ $(lsb_release -a) == *"CentOS"* ]]; then 
+            if [[ $(cat /etc/os-release) == *"Ubuntu"* ]] || [[ $(cat /etc/os-release) == *"CentOS"* ]]; then 
                 if command_exists 'terraform'; then
+                    sh -c "apt-get update && apt-get install -y lsb-release && apt-get clean all"
                     sh -c "apt-get update" 
                     sh -c "apt-get install wget -y"
                     sh -c "apt-get install -y gnupg software-properties-common"
@@ -219,13 +219,13 @@ case $(uname) in
                         sh -c $(brew install azure-cli)
                     fi
                 else
-                    sh -c "apt-get update && apt-get install -y lsb-release && apt-get clean all"
-                    # if command_exists 'az'; then
-                        if [[ $(lsb_release -a) == *"Ubuntu"* ]] || [[ $(lsb_release -a) == *"CentOS"* ]]; then 
+                    if command_exists 'az'; then
+                        # sh -c "apt-get update && apt-get install -y lsb-release && apt-get clean all"
+                        if [[ $(cat /etc/os-release) == *"Ubuntu"* ]] || [[ $(cat /etc/os-release) == *"CentOS"* ]]; then 
                             sh -c "apt-get install curl -y"
                             sh -c "curl -sL https://aka.ms/InstallAzureCLIDeb | bash"
                         fi
-                    # fi
+                    fi
                 fi
                 
             ;;
@@ -237,7 +237,7 @@ case $(uname) in
             ;;
 
             * )
-
+            
                 echo "The MOIAC_CLOUD_PROVIDER variable is an unrecognizable value. To continue the installation you will have to refer to the documentation and replace this."
 
             ;;

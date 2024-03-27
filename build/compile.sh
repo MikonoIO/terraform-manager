@@ -11,12 +11,18 @@ case ${SHELL} in
     
 esac
 
-source build/install.sh
+build/install.sh
 
-MOIAC_CLOUD_PROVIDER=$(bash -c "grep -Eo 'MOIAC_CLOUD_PROVIDER.+' ${RUNCOM_PATH} | tail -n 1")
+if [ -n "${MOIAC_CLOUD_PROVIDER}" ]; then 
+    MOIAC_CLOUD="$MOIAC_CLOUD_PROVIDER"
+else
+    MOIAC_CLOUD=$(grep -Eo 'MOIAC_CLOUD_PROVIDER.+' ${RUNCOM_PATH} | tail -n 1)
+fi
 
-if [ -n "${MOIAC_CLOUD_PROVIDER}" ]; then
+if [ -n "${MOIAC_CLOUD}" ]; then
 
-    source build/setup.sh "${MOIAC_CLOUD_PROVIDER}"
+    source build/setup.sh "${MOIAC_CLOUD}"
 
 fi
+
+exit 0
