@@ -23,7 +23,7 @@ connect_azure () {
     echo "Checking if azure logged in:"
     
     LOGIN_RESULT=$(sh -c "az account list")
-
+    
     if [[ "$LOGIN_RESULT" == "[]" ]]; then
         echo "Logging into azure..."
         sh -c "az login --use-device-code"

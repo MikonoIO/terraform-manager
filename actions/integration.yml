@@ -27,9 +27,7 @@ jobs:
       - checkout
       - run:
           name: Run terraform build/*
-          command: |
-            echo '\033[B' '\r' | . build/compile.sh 
-            . build/run.sh
+          command: . build/compile.sh && . build/run.sh
 
 workflows:
   unittest:
