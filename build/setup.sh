@@ -53,6 +53,8 @@ setup_azure () {
         TENANT_VAR=$(echo "${TENANT_BASE}" | cut -c 11-) 
         TENANT_VAL=$(echo "${TENANT_VAR}" | grep -Eo '[^", ]+')
 
+        echo "${SERVICE_PRINCIPAL}"
+        
         set_env "ARM_CLIENT_ID" ${APPLICATION_VAL}
         set_env "ARM_CLIENT_SECRET" ${PASSWORD_VAL}
         set_env "ARM_SUBSCRIPTION_ID" ${MOIAC_PRINCIPAL_ID}
